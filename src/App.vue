@@ -4,33 +4,57 @@
       class="main__input"
       type="text"
       placeholder="Введите слово для поиска среди анекдотов..."
+      v-model="search"
     />
 
-    <ul class="main__anek-list">
-      <li class="main__anek anek">
-        <p class="anek__text">Text</p>
-
-        <button class="anek__like" type="button">Like</button>
-      </li>
-
-      <li class="main__anek anek anek--liked">
-        <p class="anek__text">Text</p>
-
-        <button class="anek__like" type="button">Like</button>
-      </li>
-
-      <li class="main__anek anek">
-        <p class="anek__text">Text</p>
-
-        <button class="anek__like" type="button">Like</button>
-      </li>
+    <ul v-if="filteredAneks.length" class="main__anek-list">
+      <anek-item v-for="anek in filteredAneks" :key="anek.id" />
     </ul>
+
+    <p v-else class="main__no-aneks">
+      Нет анеков содержащих "{{ search.trim().toLowerCase() }}" :`(
+    </p>
   </main>
 </template>
 
 <script>
+import AnekItem from "./components/anek-item.vue";
+
 export default {
-  name: "App"
+  name: "App",
+
+  components: {
+    AnekItem
+  },
+
+  data() {
+    return {
+      aneks: [
+        {
+          text: "text",
+          id: Math.random()
+        },
+        {
+          text: "text",
+          id: Math.random()
+        },
+        {
+          text: "text",
+          id: Math.random()
+        }
+      ],
+
+      search: ""
+    };
+  },
+
+  computed: {
+    filteredAneks() {
+      return this.aneks.filter(anek =>
+        anek.text.toLowerCase().includes(this.search.trim().toLowerCase())
+      );
+    }
+  }
 };
 </script>
 
@@ -68,66 +92,8 @@ export default {
   flex-direction: column;
 }
 
-.anek {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 2px solid $color-black;
-  border-radius: 5px;
-  padding: 18px;
-
-  &--liked {
-    background-color: $color-light-green;
-
-    .anek__like {
-      background-color: $color-dark-red;
-
-      &::before,
-      &::after {
-        background-color: $color-dark-red;
-      }
-    }
-  }
-}
-
-.anek__text {
-  padding: 0;
-  margin: 0;
-  font-size: 28px;
-  word-break: break-word;
-}
-
-.anek__like {
-  font-size: 0;
-  background-color: $color-red;
-  width: 30px;
-  height: 30px;
-  margin: 0 10px;
-  padding: 0;
-  position: relative;
-  transform: rotate(-45deg);
-  border: none;
-  cursor: pointer;
-  flex-shrink: 0;
-
-  &:before,
-  &:after {
-    position: absolute;
-    content: "";
-    background-color: $color-red;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-  }
-
-  &:before {
-    top: -15px;
-    left: 0;
-  }
-
-  &:after {
-    top: 0;
-    left: 15px;
-  }
+.main__no-aneks {
+  margin-top: 20px;
+  font-size: 24px;
 }
 </style>
