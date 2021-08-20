@@ -10,7 +10,13 @@
     <css-spinner v-if="spinner" />
 
     <ul v-else-if="filteredAneks.length" class="main__anek-list">
-      <anek-item v-for="anek in filteredAneks" :anek="anek" :key="anek.id" />
+      <anek-item
+        v-for="anek in filteredAneks"
+        :anek="anek"
+        :key="anek.id"
+        @like="likeJoke"
+        @dislike="dislikeJoke"
+      />
     </ul>
 
     <p v-else class="main__no-aneks">
@@ -23,7 +29,7 @@
 import AnekItem from "./components/anek-item.vue";
 import CssSpinner from "./components/css-spinner.vue";
 
-import { getJokes } from "./api.js";
+import { getJokes, addLikedJoke, removeLikedJoke } from "./api.js";
 
 export default {
   name: "App",
@@ -40,6 +46,30 @@ export default {
       search: "",
       spinner: true
     };
+  },
+
+  methods: {
+    likeJoke(id) {
+      addLikedJoke(id);
+
+      this.toggleAnekLiked(id);
+    },
+
+    dislikeJoke(id) {
+      removeLikedJoke(id);
+
+      this.toggleAnekLiked(id);
+    },
+
+    toggleAnekLiked(id) {
+      this.aneks = this.aneks.map(anek => {
+        if (anek.id === id) {
+          anek.liked = !anek.liked;
+        }
+
+        return anek;
+      });
+    }
   },
 
   computed: {

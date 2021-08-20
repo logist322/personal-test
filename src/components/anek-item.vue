@@ -1,8 +1,10 @@
 <template>
-  <li class="main__anek anek" :class="{ 'anek--liked': liked }">
+  <li class="main__anek anek" :class="{ 'anek--liked': anek.liked }">
     <p class="anek__text">{{ anek.text }}</p>
 
-    <button class="anek__like" type="button" @click="toggleLiked">Like</button>
+    <button class="anek__like" type="button" @click="buttonHandler">
+      Like
+    </button>
   </li>
 </template>
 
@@ -16,15 +18,16 @@ export default {
     }
   },
 
-  data() {
-    return {
-      liked: false
-    };
+  emits: {
+    like: null,
+    dislike: null
   },
 
   methods: {
-    toggleLiked() {
-      this.liked = !this.liked;
+    buttonHandler() {
+      this.anek.liked
+        ? this.$emit("dislike", this.anek.id)
+        : this.$emit("like", this.anek.id);
     }
   }
 };
@@ -58,7 +61,7 @@ export default {
 .anek__text {
   padding: 0;
   margin: 0;
-  font-size: 28px;
+  font-size: 24px;
   word-break: break-word;
 }
 
