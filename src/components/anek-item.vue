@@ -1,6 +1,6 @@
 <template>
   <li class="main__anek anek" :class="{ 'anek--liked': liked }">
-    <p class="anek__text">Text</p>
+    <p class="anek__text">{{ anek.text }}</p>
 
     <button class="anek__like" type="button" @click="toggleLiked">Like</button>
   </li>
@@ -9,6 +9,12 @@
 <script>
 export default {
   name: "AnekItem",
+
+  props: {
+    anek: {
+      type: Object
+    }
+  },
 
   data() {
     return {

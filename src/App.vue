@@ -7,8 +7,10 @@
       v-model="search"
     />
 
-    <ul v-if="filteredAneks.length" class="main__anek-list">
-      <anek-item v-for="anek in filteredAneks" :key="anek.id" />
+    <css-spinner v-if="spinner" />
+
+    <ul v-else-if="filteredAneks.length" class="main__anek-list">
+      <anek-item v-for="anek in filteredAneks" :anek="anek" :key="anek.id" />
     </ul>
 
     <p v-else class="main__no-aneks">
@@ -19,32 +21,24 @@
 
 <script>
 import AnekItem from "./components/anek-item.vue";
+import CssSpinner from "./components/css-spinner.vue";
+
+import { getJokes } from "./api.js";
 
 export default {
   name: "App",
 
   components: {
-    AnekItem
+    AnekItem,
+    CssSpinner
   },
 
   data() {
     return {
-      aneks: [
-        {
-          text: "text",
-          id: Math.random()
-        },
-        {
-          text: "text",
-          id: Math.random()
-        },
-        {
-          text: "text",
-          id: Math.random()
-        }
-      ],
+      aneks: [],
 
-      search: ""
+      search: "",
+      spinner: true
     };
   },
 
@@ -54,6 +48,12 @@ export default {
         anek.text.toLowerCase().includes(this.search.trim().toLowerCase())
       );
     }
+  },
+
+  async mounted() {
+    this.aneks = await getJokes();
+
+    this.spinner = false;
   }
 };
 </script>
